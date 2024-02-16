@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 
 const dataFolderPath = path.join(__dirname, 'data');
-const recipesFilePath = path.join(__dirname, 'data', 'recipes.json');
+const recipesFilePath = path.join(dataFolderPath, 'recipes.json');
 const usersFilePath = path.join(dataFolderPath, 'users.json');
 
 let recipeIdCounter = 9; // Starting ID for new recipes
@@ -280,7 +280,7 @@ fs.readFile(recipesFilePath, 'utf8', (err, data) => {
 
         recipes.push(newRecipe);
 
-        fs.writeFile('recipes.json', JSON.stringify(recipes, null, 2), (err) => {
+        fs.writeFile(recipesFilePath, JSON.stringify(recipes, null, 2), (err) => {
             if (err) {
                 console.error('Error writing recipes.json:', err);
                 return;
@@ -311,7 +311,8 @@ app.put('/api/recipes/:recipeId', validateUser, (req, res) => {
             ...updatedRecipe
         };
 
-        fs.writeFile('recipes.json', JSON.stringify(recipes, null, 2), (err) => {
+        fs.writeFile(recipesFilePath, JSON.stringify(recipes, null, 2), (err) => {
+
             if (err) {
                 console.error('Error writing recipes.json:', err);
                 return res.status(500).send('Error updating recipe.');
