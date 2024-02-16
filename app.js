@@ -8,12 +8,40 @@ app.use(express.json());
 
 const dataFolderPath = path.join(__dirname, 'data');
 const recipesFilePath = path.join(__dirname, 'data', 'recipes.json');
-
-function authenticateUser(username, password) {
-    return username === 'admin' && password === 'admin';
-}
+const usersFilePath = path.join(dataFolderPath, 'users.json');
 
 let recipeIdCounter = 9; // Starting ID for new recipes
+
+let users = [];
+try {
+    const usersData = fs.readFileSync(usersFilePath, 'utf8');
+    users = JSON.parse(usersData);
+} catch (error) {
+    console.error('Error reading users file:', error);
+}
+
+// Endpoint for user registration
+app.post('/api/register', (req, res) => {
+    const { username, password } = req.body;
+
+    // Check if username is already taken
+    if (users.find(user => user.username === username)) {
+        return res.status(400).send('Username already exists.');
+    }
+
+    // Add user to the list
+    const newUser = { id: uuidv4(), username, password };
+    users.push(newUser);
+
+    // Save users to file
+    fs.writeFile(usersFilePath, JSON.stringify(users, null, 2), (err) => {
+        if (err) {
+            console.error('Error writing users file:', err);
+            return res.status(500).send('Error registering user.');
+        }
+        res.status(201).send('User registered successfully.');
+    });
+});
 
 // Function to generate a new recipe ID
 function generateRecipeId() {
@@ -51,12 +79,16 @@ function validateUser(req, res, next) {
         return res.status(401).send('Enter correct username and password to verify your identity.');
     }
 
-    if (!authenticateUser(username, password)) {
+    // Check if username and password match any user in the users array
+    const user = users.find(user => user.username === username && user.password === password);
+
+    if (!user) {
         return res.status(401).send('Invalid username or password.');
     }
 
     next();
 }
+
 
 app.get('/', (req, res) => {
     res.send("RECIPE API");
