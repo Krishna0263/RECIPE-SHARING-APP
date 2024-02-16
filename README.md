@@ -39,4 +39,4 @@ Request body should contain JSON data with the following fields: name, category,
 -	DELETE /api/recipes/:recipeId: Delete a recipe by recipe ID.
 -	POST /api/recipes/addNewRecipe: Add a new recipe.
 When sending POST request, make sure to include all the necessary data 
-("name":"New Recipe", "category":"Dinner", "ingredients":["Ingredient 1", "Ingredient 2"], "instructions":"Instructions for the new recipe.")
+('{"name":"New Recipe", "category":"Dinner", "ingredients":["Ingredient 1", "Ingredient 2"], "instructions":"Instructions for the new recipe."}')
