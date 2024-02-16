@@ -1,4 +1,6 @@
 # Recipe Sharing API
+## Group name: ProgCrammers
+
 ## Members:
 -	Cindy Legaspino
 -	John Kenneth Fetizanan
