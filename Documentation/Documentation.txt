@@ -1,0 +1,40 @@
+Documentation of the Recipe API
+The snippets and of the working API are attached in the .pdf file.
+1. Necessary modules used:
+•	express: Used to create the web server and handles HTTP requests.
+•	fs: Interacts with the file system to read and write the recipes.json file.
+•	path: Constructs file paths in a platform-independent way.
+•	uuid: Generates unique identifiers for recipes (but note that it's imported but not used consistently).
+2. Setting up the Express app:
+•	Create an Express app instance.
+•	Use app.use(express.json()) to parse incoming JSON data in requests.
+3. Defining file paths:
+•	Set dataFolderPath to the 'data' directory.
+•	Set recipesFilePath to the 'recipes.json' file within the data folder.
+4. Authentication function:
+•	authenticateUser checks for valid username and password (currently hardcoded to 'admin' and 'admin').
+5. Recipe ID generation:
+•	generateRecipeId increments a counter to create unique recipe IDs.
+6. Adding a new recipe:
+•	addNewRecipe assigns a new ID, appends the recipe to the data, and writes the updated recipes to the JSON file.
+7. User validation middleware:
+•	validateUser checks for valid credentials using authenticateUser and sends error responses if authentication fails.
+8. API routes:
+•	GET /: Returns a basic message indicating the API is running.
+•	GET /api/recipes/:category: Retrieves recipes by category.
+•	GET /api/recipes: Retrieves all recipes.
+•	GET /api/recipes/name/:recipeName: Retrieves a recipe by name.
+•	GET /api/recipes/id/:recipeId: Retrieves a recipe by ID.
+•	DELETE /api/recipes/:recipeId: Deletes a recipe by ID.
+•	POST /api/recipes/addNewRecipe: Adds a new recipe (note the inconsistency with other POST routes).
+•	POST /api/recipes: Adds a new recipe (using a more consistent approach with other routes).
+•	PUT /api/recipes/:recipeId: Updates an existing recipe.
+•	DELETE /api/recipes/:recipeId: Deletes a recipe by ID (duplicate of a previous route).
+9. Initial data population:
+•	Reads the recipes.json file and adds a sample recipe if the file is empty (this code seems unnecessary for typical usage).
+10. Starting the server:
+•	Listens on the specified port (defaulting to 3001) and logs a message indicating the server is running.
+11.json files created
+package.json – this describes the project by its version, dependencies set for the recipe-sharing API, and the web framework used which is Express.
+users.json - Where the id, username, and password set by the users are stored.
+recipes.json – This is where the particular recipes to be accessed by the user are stored. 
