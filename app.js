@@ -13,11 +13,42 @@ function authenticateUser(username, password) {
     return username === 'admin' && password === 'admin';
 }
 
+let recipeIdCounter = 9; // Starting ID for new recipes
+
+// Function to generate a new recipe ID
+function generateRecipeId() {
+    return recipeIdCounter++;
+}
+
+// Function to add a new recipe
+function addNewRecipe(newRecipe) {
+    newRecipe.recipeId = generateRecipeId();
+    fs.readFile(recipesFilePath, 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading recipes.json:', err);
+            return;
+        }
+        try {
+            const recipes = JSON.parse(data);
+            recipes.push(newRecipe);
+            fs.writeFile(recipesFilePath, JSON.stringify(recipes, null, 2), (err) => {
+                if (err) {
+                    console.error('Error writing recipes.json:', err);
+                    return;
+                }
+                console.log('New recipe added successfully!');
+            });
+        } catch (error) {
+            console.error('Error parsing recipes.json:', error);
+        }
+    });
+}
+
 function validateUser(req, res, next) {
     const { username, password } = req.headers;
 
     if (!username || !password) {
-        return res.status(401).send('Enter your username and password to verify your identity.');
+        return res.status(401).send('Enter correct username and password to verify your identity.');
     }
 
     if (!authenticateUser(username, password)) {
@@ -51,7 +82,7 @@ app.get('/api/recipes/:category', validateUser, (req, res) => {
     });
 });
 // Route to get all recipes
-app.get('/api/recipes', (req, res) => {
+app.get('/api/recipes', validateUser, (req, res) => {
     // Read the recipes from the JSON file
     fs.readFile(recipesFilePath, 'utf8', (err, data) => {
         if (err) {
@@ -122,7 +153,7 @@ app.get('/api/recipes/id/:recipeId', validateUser, (req, res) => {
 });
 
 // Route to delete a recipe by ID
-app.delete('/api/recipes/:recipeId', (req, res) => {
+app.delete('/api/recipes/:recipeId', validateUser, (req, res) => {
     const recipeId = req.params.recipeId;
 
     fs.readFile(recipesFilePath, 'utf8', (err, data) => {
@@ -159,7 +190,7 @@ app.delete('/api/recipes/:recipeId', (req, res) => {
 
 
 // addNewRecipe endpoint
-app.post('/api/recipes/addNewRecipe', (req, res) => {
+app.post('/api/recipes/addNewRecipe', validateUser, (req, res) => {
     // Read the existing recipes
     fs.readFile(recipesFilePath, 'utf8', (err, data) => {
         if (err) {
@@ -168,12 +199,18 @@ app.post('/api/recipes/addNewRecipe', (req, res) => {
         }
 
         try {
-
             const recipes = JSON.parse(data);
 
             const newRecipe = req.body;
+            newRecipe.recipeId = generateRecipeId(); // Generate a new recipe ID
 
-            recipes.push(newRecipe);
+            // Move recipeId to the beginning of the object
+            const updatedRecipe = {
+                recipeId: newRecipe.recipeId,
+                ...newRecipe
+            };
+
+            recipes.push(updatedRecipe);
 
             fs.writeFile(recipesFilePath, JSON.stringify(recipes, null, 2), (err) => {
                 if (err) {
@@ -224,7 +261,7 @@ fs.readFile(recipesFilePath, 'utf8', (err, data) => {
 });
 
 // Edit Existing recipe
-app.put('/api/recipes/:recipeId', (req, res) => {
+app.put('/api/recipes/:recipeId', validateUser, (req, res) => {
     const recipeId = req.params.recipeId;
     const updatedRecipe = req.body;
 
