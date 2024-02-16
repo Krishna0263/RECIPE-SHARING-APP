@@ -25,7 +25,7 @@ This project aims to develop an approachable platform that people can use to sha
 3.	Run the server (node app.js):
 4.	Access the API endpoints using API tools like Postman.
 ## API Endpoints
--	GET /api/breakfast: Get all recipes.
+-	GET /api/recipes: Get all recipes.
 -	GET /api/recipes/name/:recipeName:  Get a specific breakfast recipe by name.
 (if the recipe name has space, change the space with %20, for example /Pork%20BBQ)
 -	GET /api/recipes/id/:recipeID: Get specific recipe by recipe ID.
@@ -38,5 +38,12 @@ Request body should contain JSON data with the following fields: name, category,
 (update its details with the new data from the request body.)
 -	DELETE /api/recipes/:recipeId: Delete a recipe by recipe ID.
 -	POST /api/recipes/addNewRecipe: Add a new recipe.
-When sending POST request, make sure to include all the necessary data 
-('{"name":"New Recipe", "category":"Dinner", "ingredients":["Ingredient 1", "Ingredient 2"], "instructions":"Instructions for the new recipe."}')
+When sending POST request, make sure to include all the necessary data (recipeID is added automatically to avoid same ID)
+example for adding recipe
+{
+  "name": "New Recipe",
+  "category": "Dinner",
+  "ingredients": ["Ingredient 1", "Ingredient 2"],
+  "instructions": ["Instructions 1", "Instructions 2"]
+}
+
