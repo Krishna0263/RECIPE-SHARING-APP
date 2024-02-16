@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 
 const dataFolderPath = path.join(__dirname, 'data');
-const recipesFilePath = path.join(dataFolderPath, 'recipes.json');
+const recipesFilePath = path.join(__dirname, 'data', 'recipes.json');
 
 function authenticateUser(username, password) {
     return username === 'admin' && password === 'admin';
@@ -265,23 +265,33 @@ app.put('/api/recipes/:recipeId', validateUser, (req, res) => {
     const recipeId = req.params.recipeId;
     const updatedRecipe = req.body;
 
-    let recipes = JSON.parse(fs.readFileSync('recipes.json', 'utf8'));
+    try {
+        let recipes = JSON.parse(fs.readFileSync(recipesFilePath, 'utf8'));
 
-    const recipeIndex = recipes.findIndex(recipe => recipe.recipeId === parseInt(recipeId));
+        const recipeIndex = recipes.findIndex(recipe => recipe.recipeId === parseInt(recipeId));
 
-    if (recipeIndex === -1) {
-        return res.status(404).send('Recipe not found.');
+        if (recipeIndex === -1) {
+            return res.status(404).send('Recipe not found.');
+        }
+
+        recipes[recipeIndex] = {
+            ...recipes[recipeIndex],
+            ...updatedRecipe
+        };
+
+        fs.writeFile('recipes.json', JSON.stringify(recipes, null, 2), (err) => {
+            if (err) {
+                console.error('Error writing recipes.json:', err);
+                return res.status(500).send('Error updating recipe.');
+            }
+            res.send('Recipe updated successfully.');
+        });
+    } catch (error) {
+        console.error('Error updating recipe:', error);
+        res.status(500).send('Error updating recipe.');
     }
-
-    recipes[recipeIndex] = {
-        ...recipes[recipeIndex],
-        ...updatedRecipe
-    };
-
-    fs.writeFileSync('recipes.json', JSON.stringify(recipes, null, 2));
-
-    res.send('Recipe updated successfully.');
 });
+
 
 
 app.post('/api/recipes', validateUser, (req, res) => {

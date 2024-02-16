@@ -173,5 +173,15 @@
       "10. Bake for 20-25 minutes or until golden brown.",
       "11. Serve warm."
     ]
+  },
+  {
+    "recipeId": 3,
+    "name": "New Recipe Name",
+    "category": "Category Name",
+    "ingredients": [
+      "Ingredient 1",
+      "Ingredient 2"
+    ],
+    "instructions": "Recipe instructions go here."
   }
 ]
