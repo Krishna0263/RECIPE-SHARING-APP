@@ -24,7 +24,13 @@ This project aims to develop an approachable platform that people can use to sha
 2.	Clone the repository:
 3.	Run the server (node app.js):
 4.	Access the API endpoints using API tools like Postman.
+## http://localhost:3001 : Route to handle other API endpoints
 ## API Endpoints
+- POST /api/register: Register user account
+({
+    "username": "your_username",
+    "password": "your_password"
+})
 -	GET /api/recipes: Get all recipes.
 -	GET /api/recipes/name/:recipeName:  Get a specific breakfast recipe by name.
 (if the recipe name has space, change the space with %20, for example /Pork%20BBQ)
